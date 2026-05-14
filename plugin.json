@@ -1,12 +1,12 @@
 {
-    "ID": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-    "ActionKeyword": "ahk",
-    "Name": "AHK Commander",
-    "Description": "Execute AutoHotkey v2 commands from your commands.ahk library",
+    "ID": "cf513e07-af2b-4c60-a09d-c8f25cbae1d8",
+    "ActionKeyword": "ai",
+    "Name": "Shorty AI",
+    "Description": "One-shot AI prompts in a streaming popup, against any OpenAI-compatible endpoint",
     "Author": "TrueCrimeAudit",
-    "Version": "1.0.0",
+    "Version": "0.1.0",
     "Language": "python",
-    "Website": "https://github.com/TrueCrimeDev/Flow.Launcher.Plugin.AHKCommander",
+    "Website": "https://github.com/TrueCrimeDev/Flow.Launcher.Plugin.Shorty",
     "ExecuteFileName": "main.py",
-    "IcoPath": "Images\\ahk.png"
+    "IcoPath": "Images\\icon.png"
 }

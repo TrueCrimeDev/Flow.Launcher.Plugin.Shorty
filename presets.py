@@ -36,3 +36,21 @@ def load() -> dict:
     if not isinstance(data, dict) or not data:
         return dict(DEFAULTS)
     return data
+
+
+def match(query: str, default: str = "default") -> tuple[str, str]:
+    """Return (preset_name, remainder).
+
+    If the first whitespace-delimited token matches a preset name
+    (case-insensitive), strip it and return the rest as the prompt.
+    Otherwise return (default, query) unchanged.
+    """
+    q = (query or "").strip()
+    if not q:
+        return (default, "")
+    parts = q.split(maxsplit=1)
+    first = parts[0].lower()
+    for name in load():
+        if name.lower() == first:
+            return (name, parts[1] if len(parts) > 1 else "")
+    return (default, q)

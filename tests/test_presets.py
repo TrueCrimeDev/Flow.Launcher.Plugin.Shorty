@@ -50,3 +50,38 @@ def test_load_falls_back_when_file_is_empty_object(tmp_appdata):
         f.write("{}")
     data = presets.load()
     assert "default" in data
+
+
+def test_match_finds_named_preset(tmp_appdata):
+    name, prompt = presets.match("code regex for emails")
+    assert name == "code"
+    assert prompt == "regex for emails"
+
+
+def test_match_is_case_insensitive(tmp_appdata):
+    name, prompt = presets.match("CODE foo")
+    assert name == "code"
+    assert prompt == "foo"
+
+
+def test_match_falls_through_to_default(tmp_appdata):
+    name, prompt = presets.match("regex for emails")
+    assert name == "default"
+    assert prompt == "regex for emails"
+
+
+def test_match_empty_query_returns_default(tmp_appdata):
+    name, prompt = presets.match("")
+    assert name == "default"
+    assert prompt == ""
+
+
+def test_match_single_token_that_is_a_preset(tmp_appdata):
+    name, prompt = presets.match("short")
+    assert name == "short"
+    assert prompt == ""
+
+
+def test_match_uses_caller_default(tmp_appdata):
+    name, _ = presets.match("hello", default="short")
+    assert name == "short"

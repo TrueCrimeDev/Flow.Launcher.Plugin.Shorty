@@ -1,4 +1,4 @@
-"""Preset storage for Shorty AI system prompts."""
+"""Preset storage for Shorty system prompts."""
 import json
 import os
 
@@ -12,7 +12,7 @@ DEFAULTS = {
 
 def _settings_dir() -> str:
     base = os.environ.get("APPDATA") or os.path.expanduser("~")
-    return os.path.join(base, "FlowLauncher", "Settings", "Plugins", "Shorty AI")
+    return os.path.join(base, "FlowLauncher", "Settings", "Plugins", "Shorty")
 
 
 def path() -> str:

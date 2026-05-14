@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for Shorty AI."""
+"""Shared pytest fixtures for Shorty."""
 import os
 import sys
 

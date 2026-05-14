@@ -1,4 +1,4 @@
-"""Shorty AI — Flow Launcher AI assistant plugin."""
+"""Shorty — Flow Launcher AI assistant plugin."""
 import json
 import os
 import subprocess
@@ -21,7 +21,7 @@ plugin = Plugin()
 def _settings_path() -> str:
     base = os.environ.get("APPDATA") or os.path.expanduser("~")
     return os.path.join(
-        base, "FlowLauncher", "Settings", "Plugins", "Shorty AI", "Settings.json"
+        base, "FlowLauncher", "Settings", "Plugins", "Shorty", "Settings.json"
     )
 
 

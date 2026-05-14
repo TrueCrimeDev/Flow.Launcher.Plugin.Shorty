@@ -1,4 +1,4 @@
-"""Streaming popup window for Shorty AI prompts.
+"""Streaming popup window for Shorty prompts.
 
 Pure helpers live at module scope so tests can import them without
 triggering Tk window creation.
@@ -38,7 +38,7 @@ def parse_chunk(line: str) -> str | None:
 
 def _settings_dir() -> str:
     base = os.environ.get("APPDATA") or os.path.expanduser("~")
-    return os.path.join(base, "FlowLauncher", "Settings", "Plugins", "Shorty AI")
+    return os.path.join(base, "FlowLauncher", "Settings", "Plugins", "Shorty")
 
 
 def _log_path() -> str:
@@ -106,7 +106,7 @@ class PopupApp:
         self.queue: "queue.Queue" = queue.Queue()
 
         self.root = tk.Tk()
-        self.root.title(f"Shorty AI — {preset_name}")
+        self.root.title(f"Shorty — {preset_name}")
         self.root.geometry("640x440")
         self.root.configure(bg=BG)
         self.root.bind("<Escape>", lambda e: self.root.destroy())
@@ -170,7 +170,7 @@ class PopupApp:
         if not (self.settings.get("api_key") or "").strip():
             self._show_error(
                 "No API key configured. Open Flow Launcher → Settings → "
-                "Plugins → Shorty AI and paste your key."
+                "Plugins → Shorty and paste your key."
             )
             self.root.mainloop()
             return

@@ -9,7 +9,7 @@ import pytest
 def settings_file(tmp_appdata):
     """Seed Settings.json so main.query can read it."""
     plugin_dir = os.path.join(
-        str(tmp_appdata), "FlowLauncher", "Settings", "Plugins", "Shorty AI"
+        str(tmp_appdata), "FlowLauncher", "Settings", "Plugins", "Shorty"
     )
     os.makedirs(plugin_dir, exist_ok=True)
     path = os.path.join(plugin_dir, "Settings.json")

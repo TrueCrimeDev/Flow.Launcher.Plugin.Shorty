@@ -1,4 +1,4 @@
-# Shorty AI
+# Shorty
 
 A [Flow Launcher](https://www.flowlauncher.com/) plugin that sends one-shot prompts to any OpenAI-compatible chat API and streams the response into a small popup window.
 
@@ -9,14 +9,14 @@ Type `hey`, then your prompt. Press Enter. A popup opens and the response stream
 From Flow Launcher (once published):
 
 ```
-pm install Shorty AI
+pm install Shorty
 ```
 
 Or clone this repo into `%APPDATA%\FlowLauncher\Plugins\` and restart Flow.
 
 ## Setup
 
-1. Open Flow Launcher → Settings → Plugins → Shorty AI.
+1. Open Flow Launcher → Settings → Plugins → Shorty.
 2. Paste your API key (OpenAI, OpenRouter, Groq, DeepSeek, LM Studio, Ollama — anything OpenAI-compatible).
 3. (Optional) Change the base URL, default model, default preset.
 
@@ -59,7 +59,7 @@ Each preset entry may set `"model": "..."` to override the default model per-pre
 ## Troubleshooting
 
 - **"No API key configured"** — paste your key in Flow's settings UI.
-- **Streaming hangs / never starts** — check `%APPDATA%\FlowLauncher\Settings\Plugins\Shorty AI\popup.log` for the raw error.
+- **Streaming hangs / never starts** — check `%APPDATA%\FlowLauncher\Settings\Plugins\Shorty\popup.log` for the raw error.
 - **Wrong model errors (404)** — confirm the model name matches what your provider accepts (e.g. OpenRouter wants `anthropic/claude-3-haiku`, not `claude-3-haiku`).
 
 ## Credits

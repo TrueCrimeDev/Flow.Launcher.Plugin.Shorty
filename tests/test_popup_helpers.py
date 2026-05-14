@@ -7,7 +7,7 @@ import popup
 
 def test_log_path_under_appdata(tmp_appdata):
     p = popup._log_path()
-    assert p.endswith(os.path.join("Shorty AI", "popup.log"))
+    assert p.endswith(os.path.join("Shorty", "popup.log"))
     assert str(tmp_appdata) in p
     assert os.path.isdir(os.path.dirname(p))  # _log_path creates parent
 
@@ -48,7 +48,7 @@ def test_load_settings_returns_empty_when_corrupt(tmp_appdata):
 
 def test_load_preset_returns_named_preset(tmp_appdata):
     plugin_dir = os.path.join(
-        str(tmp_appdata), "FlowLauncher", "Settings", "Plugins", "Shorty AI"
+        str(tmp_appdata), "FlowLauncher", "Settings", "Plugins", "Shorty"
     )
     os.makedirs(plugin_dir, exist_ok=True)
     with open(os.path.join(plugin_dir, "presets.json"), "w", encoding="utf-8") as f:
@@ -59,7 +59,7 @@ def test_load_preset_returns_named_preset(tmp_appdata):
 
 def test_load_preset_returns_empty_when_unknown(tmp_appdata):
     plugin_dir = os.path.join(
-        str(tmp_appdata), "FlowLauncher", "Settings", "Plugins", "Shorty AI"
+        str(tmp_appdata), "FlowLauncher", "Settings", "Plugins", "Shorty"
     )
     os.makedirs(plugin_dir, exist_ok=True)
     with open(os.path.join(plugin_dir, "presets.json"), "w", encoding="utf-8") as f:

@@ -1,4 +1,4 @@
-# Shorty AI Manual Smoke Test
+# Shorty Manual Smoke Test
 
 Run this before any release. Each item should pass with no surprises.
 

@@ -10,6 +10,8 @@ import sys
 import threading
 import time
 
+import requests
+
 # tkinter is imported lazily inside PopupApp so this module can be
 # imported (for unit tests of pure helpers) on systems where tkinter
 # isn't installed. Production target is Windows, where tkinter ships
@@ -172,14 +174,90 @@ class PopupApp:
             )
             self.root.mainloop()
             return
-        # Streaming wired up in Task 14. For now: render a placeholder so
-        # the window is visibly working when manually launched.
-        self.text.insert("end", "(streaming wired up in Task 14)")
-        self.copy_btn.configure(state="normal")
+        self._start_stream()
+        self.root.after(30, self._drain)
         self.root.mainloop()
 
     def _show_error(self, msg: str) -> None:
         self.text.insert("end", msg, ("error",))
+
+    def _start_stream(self) -> None:
+        self.text.configure(state="normal")
+        self.text.delete("1.0", "end")
+        self.copy_btn.configure(state="disabled")
+        self.regen_btn.configure(state="disabled")
+        self.queue = queue.Queue()
+        threading.Thread(target=self._stream, daemon=True).start()
+
+    def _stream(self) -> None:
+        base_url = (self.settings.get("base_url") or "https://api.openai.com/v1").rstrip("/")
+        api_key = self.settings.get("api_key", "")
+        model = self.preset.get("model") or self.settings.get("default_model") or "gpt-4o-mini"
+        try:
+            timeout = float(self.settings.get("request_timeout") or 60)
+        except (TypeError, ValueError):
+            timeout = 60.0
+
+        messages = []
+        system = self.preset.get("system_prompt", "")
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": self.prompt})
+
+        try:
+            r = requests.post(
+                f"{base_url}/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={"model": model, "stream": True, "messages": messages},
+                stream=True,
+                timeout=timeout,
+            )
+            if r.status_code >= 400:
+                body = r.text
+                try:
+                    body = r.json().get("error", {}).get("message", body) or body
+                except (ValueError, AttributeError):
+                    pass
+                self.queue.put(("error", f"Error {r.status_code}: {body}"))
+                return
+            for raw in r.iter_lines(decode_unicode=True):
+                if raw is None:
+                    continue
+                content = parse_chunk(raw)
+                if content:
+                    self.queue.put(("token", content))
+        except requests.exceptions.RequestException as e:
+            _log_error(f"transport: {type(e).__name__}: {e}")
+            self.queue.put(("error", f"Error: {type(e).__name__}: {e}"))
+        except Exception as e:
+            _log_error(f"unexpected: {type(e).__name__}: {e}")
+            self.queue.put(("error", f"Error: {type(e).__name__}: {e}"))
+        finally:
+            self.queue.put(("done", None))
+
+    def _drain(self) -> None:
+        done = False
+        try:
+            while True:
+                kind, payload = self.queue.get_nowait()
+                if kind == "token":
+                    self.text.insert("end", payload)
+                    self.text.see("end")
+                elif kind == "error":
+                    self.text.insert("end", payload, ("error",))
+                    self.text.see("end")
+                elif kind == "done":
+                    done = True
+        except queue.Empty:
+            pass
+        if done:
+            self.copy_btn.configure(state="normal")
+            self.regen_btn.configure(state="normal")
+            return
+        self.root.after(30, self._drain)
 
     def _copy(self) -> None:
         text = self.text.get("1.0", "end").rstrip("\n")
@@ -190,8 +268,8 @@ class PopupApp:
         self.root.after(1000, lambda: self.copy_btn.configure(text=original))
 
     def _regenerate(self) -> None:
-        # Wired in Task 14
-        pass
+        self._start_stream()
+        self.root.after(30, self._drain)
 
 
 def main() -> None:

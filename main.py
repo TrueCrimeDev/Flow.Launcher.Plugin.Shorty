@@ -46,9 +46,18 @@ def _resolved_settings() -> dict:
     }
 
 
+def _action_keyword() -> str:
+    """Read the keyword from plugin.json so the admin row label tracks it."""
+    try:
+        with open(os.path.join(parent_folder_path, "plugin.json"), "r", encoding="utf-8") as f:
+            return (json.load(f).get("ActionKeyword") or "hey").strip() or "hey"
+    except (OSError, json.JSONDecodeError):
+        return "hey"
+
+
 def _admin_row_presets() -> Result:
     return Result(
-        Title="ai :presets",
+        Title=f"{_action_keyword()} :presets",
         SubTitle=f"Open {presets.path()}",
         IcoPath=ICON,
         JsonRPCAction={"method": "open_presets_file", "parameters": []},

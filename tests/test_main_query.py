@@ -46,7 +46,7 @@ def test_query_with_prompt_returns_sentinel_then_admin(main_module):
     assert rows[0]["Title"].startswith("Ask [default]: hello world")
     assert rows[0]["JsonRPCAction"]["method"] == "ask"
     assert rows[0]["JsonRPCAction"]["parameters"] == ["default", "hello world"]
-    assert rows[1]["Title"] == "ai :presets"
+    assert rows[1]["Title"] == "hey :presets"
 
 
 def test_query_with_preset_token_routes(main_module):
@@ -68,7 +68,7 @@ def test_query_admin_presets_returns_only_that_row(main_module):
     payload = main_module.query(":presets")
     rows = _result_dicts(payload)
     assert len(rows) == 1
-    assert rows[0]["Title"] == "ai :presets"
+    assert rows[0]["Title"] == "hey :presets"
     assert rows[0]["JsonRPCAction"]["method"] == "open_presets_file"
 
 

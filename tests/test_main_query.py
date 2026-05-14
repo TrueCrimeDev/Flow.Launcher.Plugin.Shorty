@@ -77,3 +77,40 @@ def test_query_unknown_admin_command_returns_help_row(main_module):
     rows = _result_dicts(payload)
     assert len(rows) == 1
     assert "Unknown admin command" in rows[0]["Title"]
+
+
+def test_ask_spawns_popup_subprocess(main_module, monkeypatch, tmp_appdata):
+    captured = {}
+
+    def fake_popen(cmd, **kwargs):
+        captured["cmd"] = cmd
+        captured["kwargs"] = kwargs
+        class _Fake:
+            pid = 12345
+        return _Fake()
+
+    monkeypatch.setattr("subprocess.Popen", fake_popen)
+    main_module.ask("code", "regex for emails")
+
+    assert captured["cmd"][1].endswith("popup.py")
+    assert captured["cmd"][2] == "code"
+    assert captured["cmd"][3] == "regex for emails"
+    assert captured["cmd"][4].endswith("Settings.json")
+    flags = captured["kwargs"].get("creationflags", 0)
+    if os.name == "nt":
+        assert flags != 0
+
+
+def test_open_presets_file_creates_then_opens(main_module, monkeypatch, tmp_appdata):
+    opened = {}
+    monkeypatch.setattr("os.startfile", lambda p: opened.setdefault("path", p), raising=False)
+    monkeypatch.setattr(
+        "subprocess.Popen",
+        lambda cmd, **kw: opened.setdefault("path", cmd[-1]),
+    )
+
+    main_module.open_presets_file()
+
+    import presets
+    assert opened["path"] == presets.path()
+    assert os.path.isfile(presets.path())

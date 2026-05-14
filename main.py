@@ -1,6 +1,7 @@
 """Shorty AI — Flow Launcher AI assistant plugin."""
 import json
 import os
+import subprocess
 import sys
 
 parent_folder_path = os.path.abspath(os.path.dirname(__file__))
@@ -92,6 +93,44 @@ def query(q: str):
         ),
         _admin_row_presets(),
     ])
+
+
+# Windows process creation flags. Defined as ints so the module imports
+# cleanly on non-Windows dev machines where subprocess doesn't expose
+# them as attrs.
+DETACHED_PROCESS = 0x00000008
+CREATE_NO_WINDOW = 0x08000000
+
+
+@plugin.on_method
+def ask(preset_name: str, prompt: str):
+    """Spawn the popup subprocess and return immediately."""
+    py = sys.executable
+    pyw = py.replace("python.exe", "pythonw.exe")
+    if not os.path.isfile(pyw):
+        pyw = py
+    popup_path = os.path.join(parent_folder_path, "popup.py")
+    settings_json = _settings_path()
+
+    kwargs = {"close_fds": True}
+    if os.name == "nt":
+        kwargs["creationflags"] = DETACHED_PROCESS | CREATE_NO_WINDOW
+
+    subprocess.Popen(
+        [pyw, popup_path, preset_name, prompt, settings_json],
+        **kwargs,
+    )
+
+
+@plugin.on_method
+def open_presets_file():
+    """Open presets.json in the OS default editor (Windows: os.startfile)."""
+    presets.load()  # ensure file exists before opening
+    if os.name == "nt":
+        os.startfile(presets.path())  # type: ignore[attr-defined]
+    else:
+        # Dev convenience for non-Windows. Production target is Windows.
+        subprocess.Popen(["xdg-open", presets.path()])
 
 
 if __name__ == "__main__":

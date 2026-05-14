@@ -5,3 +5,5 @@ __pycache__/
 *.zip
 .vscode/
 .idea/
+.venv/
+.pytest_cache/

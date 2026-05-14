@@ -192,7 +192,7 @@ class PopupApp:
     def _stream(self) -> None:
         base_url = (self.settings.get("base_url") or "https://api.openai.com/v1").rstrip("/")
         api_key = self.settings.get("api_key", "")
-        model = self.preset.get("model") or self.settings.get("default_model") or "gpt-4o-mini"
+        model = self.preset.get("model") or self.settings.get("default_model") or "gpt-5.5-instant"
         try:
             timeout = float(self.settings.get("request_timeout") or 60)
         except (TypeError, ValueError):

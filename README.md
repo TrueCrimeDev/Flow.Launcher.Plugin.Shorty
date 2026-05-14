@@ -2,7 +2,7 @@
 
 A [Flow Launcher](https://www.flowlauncher.com/) plugin that sends one-shot prompts to any OpenAI-compatible chat API and streams the response into a small popup window.
 
-Type `ai`, then your prompt. Press Enter. A popup opens and the response streams in.
+Type `hey`, then your prompt. Press Enter. A popup opens and the response streams in.
 
 ## Install
 
@@ -24,7 +24,7 @@ Or clone this repo into `%APPDATA%\FlowLauncher\Plugins\` and restart Flow.
 |---|---|---|
 | `api_key` | *(empty)* | Bearer token. Plain text in Flow's settings file. |
 | `base_url` | `https://api.openai.com/v1` | No trailing slash. |
-| `default_model` | `gpt-4o-mini` | Per-preset overrides supported (see Presets). |
+| `default_model` | `gpt-5.5-instant` | Per-preset overrides supported (see Presets). |
 | `default_preset` | `default` | Used when no preset name is the first word of your query. |
 | `request_timeout` | `60` | Seconds. |
 
@@ -32,11 +32,11 @@ Or clone this repo into `%APPDATA%\FlowLauncher\Plugins\` and restart Flow.
 
 A preset is a named system prompt. Trigger one by typing its name as the first word of your query:
 
-- `ai code regex for matching emails` → uses the `code` preset.
-- `ai short summarize this article` → uses the `short` preset.
-- `ai what time is it in Tokyo` → uses the default preset (no match on first word).
+- `hey code regex for matching emails` → uses the `code` preset.
+- `hey short summarize this article` → uses the `short` preset.
+- `hey what time is it in Tokyo` → uses the default preset (no match on first word).
 
-Edit your presets by typing `ai :presets` and pressing Enter. The file opens in your default `.json` editor.
+Edit your presets by typing `hey :presets` and pressing Enter. The file opens in your default `.json` editor.
 
 ```json
 {

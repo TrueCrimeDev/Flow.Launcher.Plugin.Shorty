@@ -13,11 +13,11 @@ Run this before any release. Each item should pass with no surprises.
 
 ### Query handler
 
-- [ ] Type `ai` (with no prompt) — see one disabled sentinel + the `:presets` row.
-- [ ] Type `ai hello` — sentinel reads `Ask [default]: hello`. Press Enter — popup opens.
-- [ ] Type `ai code regex for matching dates` — sentinel reads `Ask [code]: regex for matching dates`. Press Enter — popup uses the `code` preset's system prompt.
-- [ ] Type `ai :presets` — only the admin row appears. Press Enter — `presets.json` opens in your default JSON editor.
-- [ ] Type `ai :nope` — single help row appears.
+- [ ] Type `hey` (with no prompt) — see one disabled sentinel + the `:presets` row.
+- [ ] Type `hey hello` — sentinel reads `Ask [default]: hello`. Press Enter — popup opens.
+- [ ] Type `hey code regex for matching dates` — sentinel reads `Ask [code]: regex for matching dates`. Press Enter — popup uses the `code` preset's system prompt.
+- [ ] Type `hey :presets` — only the admin row appears. Press Enter — `presets.json` opens in your default JSON editor.
+- [ ] Type `hey :nope` — single help row appears.
 
 ### Popup window
 
@@ -32,8 +32,8 @@ Run this before any release. Each item should pass with no surprises.
 - [ ] Clear the API key in settings, run a query — popup shows red "No API key configured…".
 - [ ] Set an obviously-bad API key (`sk-bad`), run a query — popup shows red "Error 401: …".
 - [ ] Set an unreachable base URL (`https://localhost:9999/v1`), run a query — popup shows red transport error within ~60s.
-- [ ] Edit `presets.json` to add a `pirate` preset, then run `ai pirate hello` immediately (no Flow restart) — uses the new preset.
-- [ ] Corrupt `presets.json` with a stray `{`, then run `ai code hello` — falls back to `default` preset, no crash.
+- [ ] Edit `presets.json` to add a `pirate` preset, then run `hey pirate hello` immediately (no Flow restart) — uses the new preset.
+- [ ] Corrupt `presets.json` with a stray `{`, then run `hey code hello` — falls back to `default` preset, no crash.
 
 ### Logging
 

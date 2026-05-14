@@ -40,7 +40,7 @@ def _resolved_settings() -> dict:
     return {
         "api_key":        (s.get("api_key") or "").strip(),
         "base_url":       (s.get("base_url") or "https://api.openai.com/v1").rstrip("/"),
-        "default_model":  (s.get("default_model") or "gpt-4o-mini").strip(),
+        "default_model":  (s.get("default_model") or "gpt-5.5-instant").strip(),
         "default_preset": (s.get("default_preset") or "default").strip(),
         "request_timeout": s.get("request_timeout") or "60",
     }

@@ -90,8 +90,13 @@ def test_ask_spawns_popup_subprocess(main_module, monkeypatch, tmp_appdata):
         return _Fake()
 
     monkeypatch.setattr("subprocess.Popen", fake_popen)
+    # Force the popup-python lookup to a deterministic value so the test
+    # works on any machine. Real resolution happens in main._popup_python.
+    monkeypatch.setattr(main_module, "_popup_python", lambda: "C:/fake/pythonw.exe")
+
     main_module.ask("code", "regex for emails")
 
+    assert captured["cmd"][0] == "C:/fake/pythonw.exe"
     assert captured["cmd"][1].endswith("popup.py")
     assert captured["cmd"][2] == "code"
     assert captured["cmd"][3] == "regex for emails"
@@ -99,6 +104,16 @@ def test_ask_spawns_popup_subprocess(main_module, monkeypatch, tmp_appdata):
     flags = captured["kwargs"].get("creationflags", 0)
     if os.name == "nt":
         assert flags != 0
+
+
+def test_popup_python_falls_back_when_no_candidates(main_module, monkeypatch):
+    """If no Python install matches, _popup_python returns sys.executable."""
+    monkeypatch.setattr(main_module.os.path, "isfile", lambda p: False)
+    monkeypatch.setattr(main_module, "_load_settings", lambda: {})
+    result = main_module._popup_python()
+    # Either sys.executable or its pythonw.exe variant is acceptable.
+    import sys as _s
+    assert result in (_s.executable, _s.executable.replace("python.exe", "pythonw.exe"))
 
 
 def test_open_presets_file_creates_then_opens(main_module, monkeypatch, tmp_appdata):

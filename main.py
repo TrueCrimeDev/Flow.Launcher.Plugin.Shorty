@@ -111,13 +111,44 @@ DETACHED_PROCESS = 0x00000008
 CREATE_NO_WINDOW = 0x08000000
 
 
+def _popup_python() -> str:
+    """Find a Python interpreter that ships with tkinter for the popup window.
+
+    Flow's bundled embeddable Python (sys.executable) deliberately omits
+    tkinter, so we can't reuse it for the popup. Resolution order:
+      1. `popup_python_path` setting (if set explicitly)
+      2. Windows Python launcher windowless variant (`C:\\Windows\\pyw.exe`)
+      3. Common Program Files / WindowsApps Python install paths
+      4. Fall back to sys.executable (popup will fail loudly but predictably)
+    """
+    s = _load_settings()
+    explicit = (s.get("popup_python_path") or "").strip()
+    if explicit and os.path.isfile(explicit):
+        return explicit
+
+    candidates = [
+        r"C:\Windows\pyw.exe",
+        r"C:\Program Files\Python313\pythonw.exe",
+        r"C:\Program Files\Python312\pythonw.exe",
+        r"C:\Program Files\Python311\pythonw.exe",
+        os.path.expandvars(r"%LOCALAPPDATA%\Programs\Python\Python313\pythonw.exe"),
+        os.path.expandvars(r"%LOCALAPPDATA%\Programs\Python\Python312\pythonw.exe"),
+        os.path.expandvars(r"%LOCALAPPDATA%\Programs\Python\Python311\pythonw.exe"),
+        os.path.expandvars(r"%LOCALAPPDATA%\Microsoft\WindowsApps\pythonw.exe"),
+    ]
+    for c in candidates:
+        if os.path.isfile(c):
+            return c
+
+    py = sys.executable
+    pyw = py.replace("python.exe", "pythonw.exe")
+    return pyw if os.path.isfile(pyw) else py
+
+
 @plugin.on_method
 def ask(preset_name: str, prompt: str):
     """Spawn the popup subprocess and return immediately."""
-    py = sys.executable
-    pyw = py.replace("python.exe", "pythonw.exe")
-    if not os.path.isfile(pyw):
-        pyw = py
+    pyw = _popup_python()
     popup_path = os.path.join(parent_folder_path, "popup.py")
     settings_json = _settings_path()
 

@@ -10,6 +10,12 @@ import sys
 import threading
 import time
 
+# Ensure plugin's bundled deps in lib/ are importable. Required because Flow's
+# embeddable Python doesn't auto-add this directory, and main.py's sys.path
+# tweaks don't carry over to the popup subprocess.
+_PLUGIN_DIR = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(_PLUGIN_DIR, "lib"))
+
 import requests
 
 # tkinter is imported lazily inside PopupApp so this module can be

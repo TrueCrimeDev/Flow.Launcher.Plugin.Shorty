@@ -17,7 +17,7 @@ def settings_file(tmp_appdata):
         json.dump({
             "api_key": "sk-test",
             "base_url": "https://api.openai.com/v1",
-            "default_model": "gpt-4o-mini",
+            "default_model": "gpt-5.5",
             "default_preset": "default",
             "request_timeout": "60",
         }, f)

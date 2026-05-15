@@ -24,7 +24,7 @@ Or clone this repo into `%APPDATA%\FlowLauncher\Plugins\` and restart Flow.
 |---|---|---|
 | `api_key` | *(empty)* | Bearer token. Plain text in Flow's settings file. |
 | `base_url` | `https://api.openai.com/v1` | No trailing slash. |
-| `default_model` | `gpt-5.5-instant` | Per-preset overrides supported (see Presets). |
+| `default_model` | `gpt-5.5` | Per-preset overrides supported (see Presets). |
 | `default_preset` | `default` | Used when no preset name is the first word of your query. |
 | `request_timeout` | `60` | Seconds. |
 

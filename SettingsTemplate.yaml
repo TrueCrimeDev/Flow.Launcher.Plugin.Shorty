@@ -17,7 +17,7 @@ body:
     attributes:
       name: default_model
       label: "Default model:"
-      defaultValue: gpt-5.5-instant
+      defaultValue: gpt-5.5
       description: Model name passed in the request body. Per-preset overrides may live in presets.json.
 
   - type: input

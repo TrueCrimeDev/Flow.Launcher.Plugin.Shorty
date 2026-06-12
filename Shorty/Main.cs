@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,7 +9,7 @@ using Shorty.Services;
 
 namespace Shorty;
 
-public sealed class Main : IPlugin, ISettingProvider, IContextMenu, IPluginI18n
+public sealed class Main : IAsyncPlugin, ISettingProvider, IContextMenu
 {
     private const string ShortyIcon = "Images\\display\\Shorty_Flow_Round_Padded.png";
     private const string AnswerIcon = "Images\\display\\Shorty_Flow_Round_Padded.png";
@@ -25,6 +24,7 @@ public sealed class Main : IPlugin, ISettingProvider, IContextMenu, IPluginI18n
     private PresetStore? _presetStore;
     private AnswerCache _answerCache = new();
     private readonly LlmClient _llmClient = new();
+    private string _actionKeyword = string.Empty;
     private (string Search, string Id)? _lastAsk;
     private (string Search, string Prompt, string Preset)? _inFlight;
     private System.Threading.Timer? _loadingTimer;
@@ -37,9 +37,10 @@ public sealed class Main : IPlugin, ISettingProvider, IContextMenu, IPluginI18n
         "Images\\display\\Shorty_Ani3_Padded.png"
     };
 
-    public void Init(PluginInitContext context)
+    public Task InitAsync(PluginInitContext context)
     {
         _context = context;
+        _actionKeyword = context.CurrentPluginMetadata.ActionKeywords.FirstOrDefault() ?? string.Empty;
         _settings = context.API.LoadSettingJsonStorage<Settings>();
         _answerCache = new AnswerCache(_settings.CacheSize);
         _settings.PropertyChanged += (_, args) =>
@@ -58,21 +59,22 @@ public sealed class Main : IPlugin, ISettingProvider, IContextMenu, IPluginI18n
 
         _presetStore = new PresetStore(pluginDirectory);
         LogInfo("Initialized C# plugin skeleton and services");
+        return Task.CompletedTask;
     }
 
-    public List<Result> Query(Query query)
+    public Task<List<Result>> QueryAsync(Query query, CancellationToken token)
     {
         try
         {
-            return QueryInternal(query);
+            return Task.FromResult(QueryInternal(query));
         }
         catch (Exception ex)
         {
             LogError($"Query failed: {ex}");
-            return
+            return Task.FromResult<List<Result>>(
             [
                 ErrorRow("Shorty error", ex.Message)
-            ];
+            ]);
         }
     }
 
@@ -125,18 +127,14 @@ public sealed class Main : IPlugin, ISettingProvider, IContextMenu, IPluginI18n
         ];
     }
 
-    public string GetTranslatedPluginTitle() => "Shorty";
-
-    public string GetTranslatedPluginDescription() =>
-        "One-shot AI prompts rendered inline in Flow Launcher.";
-
-    public void OnCultureInfoChanged(CultureInfo cultureInfo)
-    {
-    }
-
     private List<Result> QueryInternal(Query query)
     {
         EnsureInitialized();
+
+        if (!string.IsNullOrEmpty(query.ActionKeyword))
+        {
+            _actionKeyword = query.ActionKeyword;
+        }
 
         var search = (query.Search ?? string.Empty).Trim();
         if (string.IsNullOrWhiteSpace(search))
@@ -377,9 +375,9 @@ public sealed class Main : IPlugin, ISettingProvider, IContextMenu, IPluginI18n
         _loadingTimer = new System.Threading.Timer(_ =>
         {
             _loadingFrame++;
-            _context?.API.ChangeQuery($"hey {originalSearch}", requery: true);
+            _context?.API.ChangeQuery(BuildQueryText(originalSearch), requery: true);
         }, null, 250, 250);
-        _context?.API.ChangeQuery($"hey {originalSearch}", requery: true);
+        _context?.API.ChangeQuery(BuildQueryText(originalSearch), requery: true);
 
         try
         {
@@ -431,7 +429,15 @@ public sealed class Main : IPlugin, ISettingProvider, IContextMenu, IPluginI18n
         _inFlight = null;
         _context?.API.StopLoadingBar();
         _lastAsk = (originalSearch, id);
-        _context?.API.ChangeQuery($"hey {originalSearch}", requery: true);
+        _context?.API.ChangeQuery(BuildQueryText(originalSearch), requery: true);
+    }
+
+    private string BuildQueryText(string search)
+    {
+        // Global action keyword ("*") queries carry no keyword prefix.
+        return string.IsNullOrEmpty(_actionKeyword) || _actionKeyword == Query.GlobalPluginWildcardSign
+            ? search
+            : $"{_actionKeyword} {search}";
     }
 
     private async Task PreloadLoadingIconsAsync()

@@ -1,0 +1,24 @@
+{
+  "presets": {
+    "default": {
+      "system": "You are a concise, helpful assistant.",
+      "model": "",
+      "temperature": 0.2
+    },
+    "short": {
+      "system": "Reply in one sentence. No preamble.",
+      "model": "",
+      "temperature": 0.2
+    },
+    "code": {
+      "system": "Reply with code only, no commentary. Use markdown fences for code and always include the specific language tag.",
+      "model": "",
+      "temperature": 0.1
+    },
+    "translate": {
+      "system": "Translate the user's input to English. Output the translation only.",
+      "model": "",
+      "temperature": 0.2
+    }
+  }
+}

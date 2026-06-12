@@ -1,0 +1,12 @@
+{
+  "ID": "cf513e07-af2b-4c60-a09d-c8f25cbae1d8-cs",
+  "ActionKeyword": "hey",
+  "Name": "Shorty",
+  "Description": "One-shot AI prompts rendered inline in Flow Launcher, against any OpenAI-compatible endpoint",
+  "Author": "TrueCrimeAudit",
+  "Version": "0.2.0",
+  "Language": "csharp",
+  "Website": "https://github.com/TrueCrimeDev/Flow.Launcher.Plugin.Shorty",
+  "ExecuteFileName": "Shorty.dll",
+  "IcoPath": "Images\\display\\Shorty_Flow_Round_Padded.png"
+}

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>12</LangVersion>
+    <AssemblyName>Shorty</AssemblyName>
+    <RootNamespace>Shorty</RootNamespace>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Flow.Launcher\Flow.Launcher.Plugin\Flow.Launcher.Plugin.csproj" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="iNKORE.UI.WPF.Modern" Version="0.10.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="plugin.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="presets.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Images\**\*.png" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+</Project>

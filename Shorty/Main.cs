@@ -176,7 +176,7 @@ public sealed class Main : IAsyncPlugin, ISettingProvider, IContextMenu
                 IcoPath = ShortyIcon,
                 Score = 100,
                 RoundedIcon = true,
-                Preview = new Result.PreviewInfo { ContentType = PreviewContentType.Hidden },
+                PreviewVisibility = PreviewVisibility.Never,
                 AsyncAction = async _ =>
                 {
                     await AskAndNavigateAsync(presetName, prompt, search, CancellationToken.None).ConfigureAwait(false);
@@ -239,6 +239,7 @@ public sealed class Main : IAsyncPlugin, ISettingProvider, IContextMenu
                 RoundedIcon = false,
                 CopyText = entry.Text,
                 Preview = preview,
+                PreviewVisibility = PreviewVisibility.Always,
                 ContextData = entry,
                 Action = _ =>
                 {
@@ -255,6 +256,7 @@ public sealed class Main : IAsyncPlugin, ISettingProvider, IContextMenu
                 RoundedIcon = true,
                 CopyText = entry.Text,
                 Preview = preview,
+                PreviewVisibility = PreviewVisibility.Always,
                 ContextData = entry,
                 Action = _ =>
                 {
@@ -295,7 +297,7 @@ public sealed class Main : IAsyncPlugin, ISettingProvider, IContextMenu
             IcoPath = frame,
             Score = 100,
             RoundedIcon = true,
-            Preview = new Result.PreviewInfo { ContentType = PreviewContentType.Hidden },
+            PreviewVisibility = PreviewVisibility.Never,
             Action = _ => false
         };
     }
@@ -350,6 +352,7 @@ public sealed class Main : IAsyncPlugin, ISettingProvider, IContextMenu
             IcoPath = RefreshIcon,
             Score = 100,
             RoundedIcon = true,
+            PreviewVisibility = PreviewVisibility.Always,
             Preview = new Result.PreviewInfo
             {
                 IsMedia = false,
